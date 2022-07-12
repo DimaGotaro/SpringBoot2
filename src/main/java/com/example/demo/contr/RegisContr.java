@@ -1,13 +1,19 @@
 package com.example.demo.contr;
 
+import com.example.demo.model.Role;
+import com.example.demo.model.User;
 import com.example.demo.reposytory.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.Collections;
+import java.util.Map;
 
 @Controller
 public class RegisContr {
-    final UserRepo userRepo;
+    private final UserRepo userRepo;
 
     @Autowired
     public RegisContr(UserRepo userRepo) {
@@ -17,5 +23,21 @@ public class RegisContr {
     @GetMapping("/regis")
     public String regis() {
         return "regis";
+    }
+
+    @PostMapping("/regis")
+    public String addUser(User user, Map<String, Object> model) {
+        User userFromDb = userRepo.findByUsername(user.getUsername());
+
+        if (userFromDb != null) {
+            model.put("message", "User exists!");
+            return "registration";
+        }
+
+        user.setActive(true);
+        user.setRoles(Collections.singleton(Role.USER));
+        userRepo.save(user);
+
+        return "redirect:/login";
     }
 }

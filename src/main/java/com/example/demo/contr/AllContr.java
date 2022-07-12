@@ -14,7 +14,7 @@ public class AllContr {
     }
 
     @GetMapping
-    public String hello(@RequestParam(name = "name", defaultValue = "User") String name,
+    public String home(@RequestParam(name = "name", defaultValue = "User") String name,
                         Model model) {
         model.addAttribute("name", name);
         return "home";
